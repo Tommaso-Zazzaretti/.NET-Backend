@@ -1,6 +1,8 @@
+
+using Microservice;
+
 var builder = WebApplication.CreateBuilder(args);
+var startup = new Startup(builder.Configuration);
+startup.ConfigureServices(builder.Services, builder.Environment);
 var app = builder.Build();
-
-app.MapGet("/", () => "Hello World!");
-
-app.Run();
+startup.Configure(app, builder.Environment);
