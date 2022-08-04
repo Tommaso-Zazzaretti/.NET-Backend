@@ -1,4 +1,6 @@
-﻿namespace Microservice
+﻿using Microservice.Infrastructure;
+
+namespace Microservice
 {
     public class Startup
     {
@@ -8,11 +10,15 @@
             this._configuration = configuration;
         }
 
+        //App Build Configuration
         public void ConfigureServices(IServiceCollection services, IWebHostEnvironment env) {
+            services.AddInfrastructure(this._configuration);
         }
 
-        public void Configure(WebApplication app, IWebHostEnvironment env) {
-            if (!app.Environment.IsDevelopment()) {
+        //App Launch Configuration
+        public void Configure(WebApplication app) {
+            IWebHostEnvironment Env = app.Environment;
+            if (!Env.IsDevelopment()) {
             }
             app.Run();
         }
