@@ -1,5 +1,6 @@
 ﻿using Microservice.Infrastructure;
-
+using Microservice.Application;
+using Microservice.ApiWeb;
 namespace Microservice
 {
     public class Startup
@@ -13,6 +14,8 @@ namespace Microservice
         //App Build Configuration
         public void ConfigureServices(IServiceCollection services, IWebHostEnvironment env) {
             services.AddInfrastructure(this._configuration);
+            services.AddApplication();
+            services.AddApiWeb(this._configuration);
         }
 
         //App Launch Configuration
@@ -20,6 +23,8 @@ namespace Microservice
             IWebHostEnvironment Env = app.Environment;
             if (!Env.IsDevelopment()) {
             }
+            app.UseRouting();
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             app.Run();
         }
     }

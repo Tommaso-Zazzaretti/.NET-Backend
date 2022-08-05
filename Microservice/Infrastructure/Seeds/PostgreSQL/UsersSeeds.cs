@@ -9,7 +9,7 @@ namespace Microservice.Infrastructure.Seeds.PostgreSQL
                 UserName    = "Tom96",
                 Name        = "Tommaso",
                 Surname     = "Zazzaretti",
-                Email       = "tommaso.zazzaretti96@gmail.com",
+                Email       = "tommaso_zazzaretti_96@gmail.com",
                 Password    = "P@ssw0rd" 
             }
         };
