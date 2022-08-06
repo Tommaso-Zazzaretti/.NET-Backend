@@ -39,6 +39,33 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                     table.PrimaryKey("PK_users", x => x.username);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "users_roles",
+                schema: "web",
+                columns: table => new
+                {
+                    username = table.Column<string>(type: "CHAR(30)", maxLength: 30, nullable: false),
+                    rolename = table.Column<string>(type: "CHAR(20)", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_users_roles", x => new { x.username, x.rolename });
+                    table.ForeignKey(
+                        name: "FK_users_roles_roles_rolename",
+                        column: x => x.rolename,
+                        principalSchema: "web",
+                        principalTable: "roles",
+                        principalColumn: "rolename",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_users_roles_users_username",
+                        column: x => x.username,
+                        principalSchema: "web",
+                        principalTable: "users",
+                        principalColumn: "username",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 schema: "web",
                 table: "roles",
@@ -54,7 +81,18 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                 schema: "web",
                 table: "users",
                 columns: new[] { "username", "email", "name", "password", "surname" },
-                values: new object[] { "Tom96", "tommaso.zazzaretti96@gmail.com", "Tommaso", "P@ssw0rd", "Zazzaretti" });
+                values: new object[] { "Tom96", "tommaso_zazzaretti_96@gmail.com", "Tommaso", "vj2N5Y+W34VHIzFFuGe72A==.zOdv1PMtJj6nyU62yGeJaexD5E32Fw9zef39mqpdLnU=", "Zazzaretti" });
+
+            migrationBuilder.InsertData(
+                schema: "web",
+                table: "users_roles",
+                columns: new[] { "rolename", "username" },
+                values: new object[,]
+                {
+                    { "ADMIN", "Tom96" },
+                    { "SUPER-ADMIN", "Tom96" },
+                    { "USER", "Tom96" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_roles_rolename",
@@ -73,10 +111,26 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                 schema: "web",
                 table: "users",
                 column: "username");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_roles_rolename",
+                schema: "web",
+                table: "users_roles",
+                column: "rolename");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_users_roles_username",
+                schema: "web",
+                table: "users_roles",
+                column: "username");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "users_roles",
+                schema: "web");
+
             migrationBuilder.DropTable(
                 name: "roles",
                 schema: "web");

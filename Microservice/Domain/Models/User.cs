@@ -8,5 +8,8 @@
         public string? Surname { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
+
+        // Navigation properties
+        public virtual ICollection<UsersRoles>? UsersRoles { get; private set; }
     }
 }

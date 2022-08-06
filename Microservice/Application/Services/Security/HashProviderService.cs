@@ -6,7 +6,7 @@ namespace Microservice.Application.Services.Security
     /*
         SHA512 is a cryptographic hash function, while Rfc2898DeriveBytes is a key-derivation function.
         Hash functions are too fast and can be brute-forced too easily, 
-        so key-derivation function introduce a cost factor to slow down the execution of a brute force attack.
+        So key-derivation function introduce a cost factor to slow down the execution of a brute force attack.
         In the future it is possible to increase the number of iterations (cost factor) to cope with increasing 
         computing powers.
 

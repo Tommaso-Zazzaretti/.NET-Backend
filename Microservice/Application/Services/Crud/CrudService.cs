@@ -17,11 +17,11 @@ namespace Microservice.Application.Services.Crud
             if(EntityToAdd == null) { throw new ArgumentNullException(nameof(EntityToAdd)); }
             EntityEntry<T> AddedEntity = await this._ctx.Set<T>().AddAsync(EntityToAdd);
             int AddedRows = await this._ctx.SaveChangesAsync();
-            if (AddedRows == 0) { throw new Exception("Error during add"); }
+            if (AddedRows == 0) { throw new Exception("Error during create"); }
             return AddedEntity.Entity;
         }
 
-        public async Task<T?> Retrieve(Expression<Func<T, bool>> WherePredicate, params Expression<Func<T, dynamic>>[] NavigationProperties)
+        public async Task<T?> Retrieve(Expression<Func<T, bool>> WherePredicate, params Expression<Func<T, dynamic?>>[] NavigationProperties)
         {
             if (WherePredicate == null) { throw new ArgumentNullException(nameof(WherePredicate)); }
             //Init the query (FROM)
@@ -33,7 +33,7 @@ namespace Microservice.Application.Services.Crud
             //Add filter clause (WHERE)
             GetEntityByPredicateQuery = GetEntityByPredicateQuery.Where(WherePredicate);
             //Execute the query
-            return await GetEntityByPredicateQuery.FirstOrDefaultAsync();
+            return await GetEntityByPredicateQuery.AsNoTracking().FirstOrDefaultAsync();
         }
 
         public async Task<T> Update(T EntityToUpdate)
@@ -45,9 +45,15 @@ namespace Microservice.Application.Services.Crud
             return UpdatedEntity.Entity;
         }
 
-        public Task<T?> Delete(Expression<Func<T, bool>> WherePredicate)
+        public async Task<T?> Delete(Expression<Func<T, bool>> WherePredicate)
         {
-            throw new NotImplementedException();
+            if (WherePredicate == null) { throw new ArgumentNullException(nameof(WherePredicate)); }
+            T? EntityToDelete = await this.Retrieve(WherePredicate);
+            if(EntityToDelete == null) { return null; }
+            EntityEntry<T> DeletedEntity = this._ctx.Set<T>().Remove(EntityToDelete);
+            int DeletedRows = await this._ctx.SaveChangesAsync();
+            if (DeletedRows == 0) { throw new Exception("Error during delete"); }
+            return DeletedEntity.Entity;
         }
     }
 }

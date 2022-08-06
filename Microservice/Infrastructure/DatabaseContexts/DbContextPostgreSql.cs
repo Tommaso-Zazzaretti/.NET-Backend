@@ -23,7 +23,6 @@ namespace Microservice.Infrastructure.DatabaseContexts
         */
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
             optionsBuilder.UseNpgsql(x => x.MigrationsHistoryTable("MigrationsTable"));
         }
 

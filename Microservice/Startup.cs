@@ -15,15 +15,15 @@ namespace Microservice
         public void ConfigureServices(IServiceCollection services, IWebHostEnvironment env) {
             services.AddInfrastructure(this._configuration);
             services.AddApplication();
-            services.AddApiWeb(this._configuration);
+            services.AddApiWeb(this._configuration,env);
         }
 
         //App Launch Configuration
         public void Configure(WebApplication app) {
-            IWebHostEnvironment Env = app.Environment;
-            if (!Env.IsDevelopment()) {
+            if (app.Environment.IsDevelopment()) {
             }
             app.UseRouting();
+            app.UseCors("ALL");
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             app.Run();
         }

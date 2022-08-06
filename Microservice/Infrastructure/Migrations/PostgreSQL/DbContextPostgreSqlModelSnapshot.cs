@@ -93,11 +93,78 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                         new
                         {
                             UserName = "Tom96",
-                            Email = "tommaso.zazzaretti96@gmail.com",
+                            Email = "tommaso_zazzaretti_96@gmail.com",
                             Name = "Tommaso",
-                            Password = "P@ssw0rd",
+                            Password = "vj2N5Y+W34VHIzFFuGe72A==.zOdv1PMtJj6nyU62yGeJaexD5E32Fw9zef39mqpdLnU=",
                             Surname = "Zazzaretti"
                         });
+                });
+
+            modelBuilder.Entity("Microservice.Domain.Models.UsersRoles", b =>
+                {
+                    b.Property<string>("UserName")
+                        .HasMaxLength(30)
+                        .HasColumnType("CHAR(30)")
+                        .HasColumnName("username");
+
+                    b.Property<string>("RoleName")
+                        .HasMaxLength(20)
+                        .HasColumnType("CHAR(20)")
+                        .HasColumnName("rolename");
+
+                    b.HasKey("UserName", "RoleName");
+
+                    b.HasIndex("RoleName");
+
+                    b.HasIndex("UserName");
+
+                    b.ToTable("users_roles", "web");
+
+                    b.HasData(
+                        new
+                        {
+                            UserName = "Tom96",
+                            RoleName = "USER"
+                        },
+                        new
+                        {
+                            UserName = "Tom96",
+                            RoleName = "ADMIN"
+                        },
+                        new
+                        {
+                            UserName = "Tom96",
+                            RoleName = "SUPER-ADMIN"
+                        });
+                });
+
+            modelBuilder.Entity("Microservice.Domain.Models.UsersRoles", b =>
+                {
+                    b.HasOne("Microservice.Domain.Models.Role", "Role")
+                        .WithMany("UsersRoles")
+                        .HasForeignKey("RoleName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microservice.Domain.Models.User", "User")
+                        .WithMany("UsersRoles")
+                        .HasForeignKey("UserName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Microservice.Domain.Models.Role", b =>
+                {
+                    b.Navigation("UsersRoles");
+                });
+
+            modelBuilder.Entity("Microservice.Domain.Models.User", b =>
+                {
+                    b.Navigation("UsersRoles");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,8 +12,8 @@ namespace Microservice.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             //Registry all Crud Services
-            services.AddTransient<ICrudService<User>, CrudService<User,DbContextPostgreSql>>();
-            services.AddTransient<ICrudService<Role>, CrudService<Role, DbContextPostgreSql>>();
+            services.AddScoped<ICrudService<User>, CrudService<User,DbContextPostgreSql>>();
+            services.AddScoped<ICrudService<Role>, CrudService<Role, DbContextPostgreSql>>();
             //Encrypt Helper Service
             services.AddSingleton<IHashProviderService, HashProviderService>();
             return services;

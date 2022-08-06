@@ -7,12 +7,10 @@ namespace Microservice.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            //POSTGRES DB CONFIGURATION
+            //IDENTITY DB CONFIGURATION
             string PostgresConnectionString = configuration["ConnectionStrings:PostgreSqlIdentityDB"];
             services.AddDbContext<DbContextPostgreSql>(opts => {
-                opts.UseNpgsql(PostgresConnectionString)
-                .LogTo(Console.WriteLine)
-                .EnableSensitiveDataLogging();
+                opts.UseNpgsql(PostgresConnectionString)/*.LogTo(Console.WriteLine)*/.EnableSensitiveDataLogging();
             });
             return services;
         }
