@@ -81,7 +81,7 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                 schema: "web",
                 table: "users",
                 columns: new[] { "username", "email", "name", "password", "surname" },
-                values: new object[] { "Tom96", "tommaso_zazzaretti_96@gmail.com", "Tommaso", "vj2N5Y+W34VHIzFFuGe72A==.zOdv1PMtJj6nyU62yGeJaexD5E32Fw9zef39mqpdLnU=", "Zazzaretti" });
+                values: new object[] { "Tom96", "tommaso_zazzaretti_96@gmail.com", "Tommaso", "mKeQhrpCWaZqNnjjlsSyhQ==.KkNkGdx4VdyIAF2YoNcFc1OyX+YfDf6ZqdiQAWqAVFw=", "Zazzaretti" });
 
             migrationBuilder.InsertData(
                 schema: "web",
