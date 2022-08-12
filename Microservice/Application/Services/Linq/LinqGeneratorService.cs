@@ -4,12 +4,12 @@ using System.Reflection;
 
 namespace Microservice.Application.Services.Linq
 {
-    public class LinqBuilderService : ILinqBuilderService
+    public class LinqGeneratorService : ILinqGeneratorService
     {
         public readonly IDictionary<Type, Dictionary<string, PropertyInfo>> _propertiesMetadata;
         public readonly IDictionary<Type, Dictionary<string, MethodInfo>>   _methodsMetadata;
 
-        public LinqBuilderService(Assembly assembly,string NameSpace) {
+        public LinqGeneratorService(Assembly assembly,string NameSpace) {
             this._propertiesMetadata = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
             this._methodsMetadata    = new Dictionary<Type, Dictionary<string, MethodInfo>>();
             this.Init(assembly, NameSpace);

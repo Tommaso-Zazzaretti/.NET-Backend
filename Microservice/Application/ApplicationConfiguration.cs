@@ -16,8 +16,9 @@ namespace Microservice.Application
         {
             //Registry all Dto Profilers
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            //Registry LinqBuilder service 
-            services.AddSingleton<ILinqBuilderService>(new LinqBuilderService(Assembly.GetExecutingAssembly(),"Microservice.Domain.Models"));
+            //Registry all Linq Services 
+            services.AddSingleton<ILinqGeneratorService>(new LinqGeneratorService(Assembly.GetExecutingAssembly(),"Microservice.Domain.Models"));
+            services.AddSingleton<ILinqCombinatorService, LinqCombinatorService>();
             //Registry all Crud Services
             services.AddScoped<ICrudService<User>, CrudService<User,DbContextPostgreSql>>();
             services.AddScoped<ICrudService<Role>, CrudService<Role,DbContextPostgreSql>>();

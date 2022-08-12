@@ -14,13 +14,15 @@ namespace Microservice.ApiWeb.Controllers.Search
     public class UserSearchController : ControllerBase
     {
         private readonly ICrudService<User> _userCrudService;
-        private readonly ILinqBuilderService _linqBuilder;
+        private readonly ILinqGeneratorService  _linqBuilder;
+        private readonly ILinqCombinatorService _linqCombiner;
         private readonly IMapper _mapper;
 
-        public UserSearchController(ICrudService<User> CrudService, ILinqBuilderService LinqBuilder,IMapper Mapper)
+        public UserSearchController(ICrudService<User> CrudService, ILinqGeneratorService LinqBuilder, ILinqCombinatorService LinqCombiner, IMapper Mapper)
         {
             this._userCrudService = CrudService;
-            this._linqBuilder = LinqBuilder;
+            this._linqBuilder  = LinqBuilder;
+            this._linqCombiner = LinqCombiner;
             this._mapper = Mapper;
         }
 
@@ -31,6 +33,26 @@ namespace Microservice.ApiWeb.Controllers.Search
             Expression<Func<User, bool>> FilterExpr = this._linqBuilder.StringPredicate<User>(Filter.StringFieldName!,Filter.Action!,Filter.Pattern!);
             IEnumerable<User> Users = await this._userCrudService.RetrieveAll(FilterExpr);
             return Ok(this._mapper.Map<IEnumerable<User>,IEnumerable<UserDtoGetResponse>>(Users));
+        }
+
+        [HttpGet("multiplestringpred")] 
+        public async Task<IActionResult> GetUsersByMultipleStringFieldsSearch([FromBody] StringPatternPredicateFilterDto[] Filters)
+        {
+            if(!Filters.Any()) { return BadRequest(); }
+            IEnumerable<Expression<Func<User, bool>>> FiltersExpr = Filters.Select(f => this._linqBuilder.StringPredicate<User>(f.StringFieldName!, f.Action!, f.Pattern!));
+            if(FiltersExpr.Count()==1) {
+                IEnumerable<User> UsersBySinglePredicate = await this._userCrudService.RetrieveAll(FiltersExpr.Single());
+                return Ok(this._mapper.Map<IEnumerable<User>, IEnumerable<UserDtoGetResponse>>(UsersBySinglePredicate));
+            }
+            IEnumerator<Expression<Func<User, bool>>> Iterator = FiltersExpr.GetEnumerator();
+            Iterator.MoveNext(); //Move to first expression
+            Expression<Func<User, bool>>? FilterExpr = Iterator.Current;
+            while (Iterator.MoveNext()) {
+                FilterExpr = this._linqCombiner.And<User>(FilterExpr,Iterator.Current);
+            }
+            if(FilterExpr == null) { return BadRequest(); }
+            IEnumerable<User> UsersByMultiplePredicate = await this._userCrudService.RetrieveAll(FilterExpr);
+            return Ok(this._mapper.Map<IEnumerable<User>, IEnumerable<UserDtoGetResponse>>(UsersByMultiplePredicate));
         }
 
         [HttpGet("equality")] 
