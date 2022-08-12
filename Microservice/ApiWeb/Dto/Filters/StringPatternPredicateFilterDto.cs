@@ -1,6 +1,6 @@
 ﻿namespace Microservice.ApiWeb.Dto.Filters
 {
-    public class FilterDtoStringPredicate
+    public class StringPatternPredicateFilterDto
     {
         public string? StringFieldName { get; set; } // Example: "UserName", "Name"
         public string? Pattern { get; set; }         // Example: "New Y"

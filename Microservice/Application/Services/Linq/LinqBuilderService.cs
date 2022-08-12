@@ -47,11 +47,22 @@ namespace Microservice.Application.Services.Linq
             PropertyInfo PropertyObj = this._propertiesMetadata[typeof(T)][StringPropertyName];
             if(PropertyObj.PropertyType != typeof(string)) { throw new Exception("The StringPropertyName is not a string property."); } //ONLY FOR STRING FIELDS
             var StringMethodObj = this._methodsMetadata[typeof(string)][MethodName];
-            var ExprArgument = Expression.Parameter(typeof(T), "elem");                        // elem =>
-            var ExprProperty = Expression.Property(ExprArgument, PropertyObj.Name);            //      => TObj.PName
-            var ExprConstant = Expression.Constant(Pattern, typeof(string));                   //   "<Pattern>"
-            var ExprCalling  = Expression.Call(ExprProperty, StringMethodObj, ExprConstant);   // elem => elem.PName.StringMethod("<Pattern>")
+            var ExprArgument = Expression.Parameter(typeof(T), "elem");                       // elem =>
+            var ExprProperty = Expression.Property(ExprArgument, PropertyObj.Name);           //      => TObj.PName
+            var ExprConstant = Expression.Constant(Pattern, typeof(string));                  // "<Pattern>"
+            var ExprCalling  = Expression.Call(ExprProperty, StringMethodObj, ExprConstant);  // elem => elem.PName.StringMethod("<Pattern>")
             return Expression.Lambda<Func<T, bool>>(ExprCalling, ExprArgument);
+        }
+
+        public Expression<Func<T, bool>> EqualityPredicate<T,TConst>(string StringPropertyName, TConst Constant) where T : class
+        {
+            PropertyInfo PropertyObj = this._propertiesMetadata[typeof(T)][StringPropertyName];
+            if (PropertyObj.PropertyType != typeof(TConst)) { throw new Exception("The StringPropertyName type is not the Constant type"); } //ONLY FOR STRING FIELDS
+            var ExprArgument = Expression.Parameter(typeof(T), "elem");               // elem =>
+            var ExprProperty = Expression.Property(ExprArgument, PropertyObj.Name);   //      => TObj.PName
+            var ExprConstant = Expression.Constant(Constant, typeof(TConst));         // <Const>
+            var ExprEquality = Expression.Equal(ExprProperty, ExprConstant);          // elem => elem.Equals(<Const>)
+            return Expression.Lambda<Func<T, bool>>(ExprEquality, ExprArgument);
         }
     }
 }

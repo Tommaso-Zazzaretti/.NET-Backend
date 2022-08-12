@@ -24,13 +24,22 @@ namespace Microservice.ApiWeb.Controllers.Search
             this._mapper = Mapper;
         }
 
-        [HttpGet] //Example: UserName Like Search ===>  Pattern="T", Action="StartsWith", StringFieldName="UserName"
-        public async Task<IActionResult> GetUsersByStringFieldSearch([FromQuery]FilterDtoStringPredicate Filter)
+        [HttpGet("stringpred")] //Example: UserName Like Search ===>  Pattern="To", Action="StartsWith", StringFieldName="UserName"
+        public async Task<IActionResult> GetUsersByStringFieldSearch([FromQuery]StringPatternPredicateFilterDto Filter)
         {
             if (Filter == null) { return BadRequest(); }
             Expression<Func<User, bool>> FilterExpr = this._linqBuilder.StringPredicate<User>(Filter.StringFieldName!,Filter.Action!,Filter.Pattern!);
             IEnumerable<User> Users = await this._userCrudService.RetrieveAll(FilterExpr);
             return Ok(this._mapper.Map<IEnumerable<User>,IEnumerable<UserDtoGetResponse>>(Users));
+        }
+
+        [HttpGet("equality")] 
+        public async Task<IActionResult> GetUsersByStringFieldEqualitySearch([FromQuery] EqualityFilterDto<string> Filter)
+        {
+            if (Filter == null) { return BadRequest(); }
+            Expression<Func<User, bool>> FilterExpr = this._linqBuilder.EqualityPredicate<User, string>(Filter.StringFieldName!, Filter.EqualsConst!);
+            IEnumerable<User> Users = await this._userCrudService.RetrieveAll(FilterExpr);
+            return Ok(this._mapper.Map<IEnumerable<User>, IEnumerable<UserDtoGetResponse>>(Users));
         }
     }
 }
