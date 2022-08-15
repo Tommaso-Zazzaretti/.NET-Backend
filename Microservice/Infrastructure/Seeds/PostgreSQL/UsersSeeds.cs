@@ -6,7 +6,7 @@ namespace Microservice.Infrastructure.Seeds.PostgreSQL
 {
     public static class UsersSeeds
     {
-        private static readonly IHashProviderService _service = new HashProviderService();
+        private static readonly IHashProviderService _service = new HashProviderService(16,32,10000);
         public static readonly IEnumerable<User> Seeds = new List<User> {
             new User(){
                 UserName    = "Tom96",

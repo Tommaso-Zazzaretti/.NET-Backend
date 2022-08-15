@@ -16,11 +16,21 @@ namespace Microservice.Application.Services.Security
     */
     public class HashProviderService : IHashProviderService
     {
-        private readonly int _saltCharSize = 16;    // 128 bit 
-        private readonly int _keyCharSize  = 32;    // 256 bit
-        private readonly int _iterations   = 10000; // Cost factor
+        private readonly int _saltCharSize; // 16    => 128 bit 
+        private readonly int _keyCharSize;  // 32    => 256 bit
+        private readonly int _iterations;   // 10000 => Cost factor
 
-        public HashProviderService() {
+        public HashProviderService(IConfiguration configuration) {
+            this._saltCharSize = configuration.GetValue<int>("HashSettings:KEY_SIZE");
+            this._keyCharSize  = configuration.GetValue<int>("HashSettings:SALT_SIZE");
+            this._iterations   = configuration.GetValue<int>("HashSettings:ITERATIONS");
+        }
+
+        public HashProviderService(int saltSize, int keySize, int iterations)
+        {
+            this._saltCharSize = saltSize;
+            this._keyCharSize = keySize;
+            this._iterations = iterations;
         }
 
         // "PASSWORD"  ===>  "salt.hashedKey"
@@ -41,7 +51,7 @@ namespace Microservice.Application.Services.Security
             if (string.IsNullOrEmpty(Password))       { throw new ArgumentNullException(nameof(Password));   }
             //Extract  [SALT . HASHED_KEY]
             string[] splittedStoredPassword = StoredPassword.Split('.', 2);
-            if (splittedStoredPassword.Length != 2) { throw new FormatException("Wrong hash format. Should be {iterations}.{salt}.{hash}"); }
+            if (splittedStoredPassword.Length != 2) { throw new FormatException("Wrong hash format. Should be {salt}.{hash}"); }
             byte[] StoredSalt = Convert.FromBase64String(splittedStoredPassword[0]);
             byte[] StoredHash = Convert.FromBase64String(splittedStoredPassword[1]);
             //Try to hash the current password and then compare the 2 hashes
