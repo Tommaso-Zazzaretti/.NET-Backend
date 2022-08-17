@@ -4,6 +4,8 @@ using Microservice.Application.Services.Linq;
 using Microservice.Application.Services.Linq.Interfaces;
 using Microservice.Application.Services.Security;
 using Microservice.Application.Services.Security.Interfaces;
+using Microservice.Application.Services.Upload;
+using Microservice.Application.Services.Upload.Interfaces;
 using Microservice.Domain.Models;
 using Microservice.Infrastructure.DatabaseContexts;
 using System.Reflection;
@@ -25,6 +27,10 @@ namespace Microservice.Application
             services.AddScoped<ICrudService<UsersRoles>, CrudService<UsersRoles, DbContextPostgreSql>>();
             //Hash Encryption Helper Service for passwords & sensitive data
             services.AddSingleton<IHashProviderService, HashProviderService>();
+            //Registry an Http Request Accessor for Upload Servixw
+            services.AddHttpContextAccessor();
+            //Registry all Upload Services
+            services.AddScoped<IUploadService, UploadService>();
             return services;
         }
     }
