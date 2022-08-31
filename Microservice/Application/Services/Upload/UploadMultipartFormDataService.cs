@@ -1,10 +1,11 @@
-﻿using Microservice.Application.Services.Upload.Interfaces;
+﻿using Microservice.Application.Services.Upload.Contexts;
+using Microservice.Application.Services.Upload.Interfaces;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 
 namespace Microservice.Application.Services.Upload
 {
-    public class UploadMultipartFormDataService : IUploadService
+    public class UploadMultipartFormDataService : IUploadService<MultipartFormData>
     {
         private readonly IHttpContextAccessor _httpCtxAccessor;
         private readonly ISet<String> _allowedFileExtensions;

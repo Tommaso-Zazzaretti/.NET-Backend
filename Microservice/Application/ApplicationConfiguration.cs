@@ -5,6 +5,7 @@ using Microservice.Application.Services.Linq.Interfaces;
 using Microservice.Application.Services.Security;
 using Microservice.Application.Services.Security.Interfaces;
 using Microservice.Application.Services.Upload;
+using Microservice.Application.Services.Upload.Contexts;
 using Microservice.Application.Services.Upload.Interfaces;
 using Microservice.Domain.Models;
 using Microservice.Infrastructure.DatabaseContexts;
@@ -30,7 +31,7 @@ namespace Microservice.Application
             //Registry an Http Request Accessor for Upload Servixw
             services.AddHttpContextAccessor();
             //Registry all Upload Services
-            services.AddScoped<IUploadService, UploadMultipartFormDataService>();
+            services.AddScoped<IUploadService<MultipartFormData>, UploadMultipartFormDataService>();
             return services;
         }
     }
