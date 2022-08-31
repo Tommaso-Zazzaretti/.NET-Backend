@@ -20,12 +20,14 @@ namespace Microservice.Application.Services.Security
         private readonly int _keyCharSize;  // 32    => 256 bit
         private readonly int _iterations;   // 10000 => Cost factor
 
+        //Constructor via appsettings.json
         public HashProviderService(IConfiguration configuration) {
             this._saltCharSize = configuration.GetValue<int>("HashSettings:KEY_SIZE");
             this._keyCharSize  = configuration.GetValue<int>("HashSettings:SALT_SIZE");
             this._iterations   = configuration.GetValue<int>("HashSettings:ITERATIONS");
         }
 
+        //Constructor via parameters
         public HashProviderService(int saltSize, int keySize, int iterations)
         {
             this._saltCharSize = saltSize;
@@ -33,7 +35,7 @@ namespace Microservice.Application.Services.Security
             this._iterations = iterations;
         }
 
-        // "PASSWORD"  ===>  "salt.hashedKey"
+        // EX: "PASSWORD"  ===>  "salt.hashedKey"
         public string Hash(string password)
         {
             var Algorithm = new Rfc2898DeriveBytes(password, _saltCharSize, _iterations, HashAlgorithmName.SHA512);
@@ -43,19 +45,19 @@ namespace Microservice.Application.Services.Security
         }
 
 
-        //'StoredPassword' is a "salt.hashedKey" string stored in a DB, while 'Password' is the password sent in clear text by a user
-        public bool Check(string StoredPassword, string Password)
+        //'StoredField' is a "salt.hash" string stored in a DB, while 'Field' is the string sent in clear text by a user
+        public bool Check(string StoredField, string Field)
         {
             //Null check
-            if (string.IsNullOrEmpty(StoredPassword)) { throw new ArgumentNullException(nameof(StoredPassword)); }
-            if (string.IsNullOrEmpty(Password))       { throw new ArgumentNullException(nameof(Password));   }
+            if (string.IsNullOrEmpty(StoredField)) { throw new ArgumentNullException(nameof(StoredField)); }
+            if (string.IsNullOrEmpty(Field))       { throw new ArgumentNullException(nameof(Field));   }
             //Extract  [SALT . HASHED_KEY]
-            string[] splittedStoredPassword = StoredPassword.Split('.', 2);
-            if (splittedStoredPassword.Length != 2) { throw new FormatException("Wrong hash format. Should be {salt}.{hash}"); }
-            byte[] StoredSalt = Convert.FromBase64String(splittedStoredPassword[0]);
-            byte[] StoredHash = Convert.FromBase64String(splittedStoredPassword[1]);
-            //Try to hash the current password and then compare the 2 hashes
-            var Algorithm = new Rfc2898DeriveBytes(Password, StoredSalt, _iterations, HashAlgorithmName.SHA512);
+            string[] splittedStoredField = StoredField.Split('.', 2);
+            if (splittedStoredField.Length != 2) { throw new FormatException("Wrong hash format. Should be {salt}.{hash}"); }
+            byte[] StoredSalt = Convert.FromBase64String(splittedStoredField[0]);
+            byte[] StoredHash = Convert.FromBase64String(splittedStoredField[1]);
+            //Try to hash the current Field and then compare the 2 hashes
+            var Algorithm = new Rfc2898DeriveBytes(Field, StoredSalt, _iterations, HashAlgorithmName.SHA512);
             var PasswordHash = Algorithm.GetBytes(this._keyCharSize);
             return StoredHash.SequenceEqual(PasswordHash);
         }

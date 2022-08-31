@@ -15,10 +15,10 @@ namespace Microservice.ApiWeb.Controllers.Upload
             this._uploadService = UploadService;
         }
 
-        [HttpPost("multipart/form-data")]
+        [HttpPost("multipart-form-data")]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Upload() {
-            await this._uploadService.UploadMultipartRequestHandler();
+            await this._uploadService.UploadHandlerAsync();
             return Ok();
         }
     }

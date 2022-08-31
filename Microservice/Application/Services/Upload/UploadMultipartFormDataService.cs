@@ -4,7 +4,7 @@ using Microsoft.Net.Http.Headers;
 
 namespace Microservice.Application.Services.Upload
 {
-    public class UploadService : IUploadService
+    public class UploadMultipartFormDataService : IUploadService
     {
         private readonly IHttpContextAccessor _httpCtxAccessor;
         private readonly ISet<String> _allowedFileExtensions;
@@ -12,14 +12,14 @@ namespace Microservice.Application.Services.Upload
         private readonly int _maxBoundaryLength = 70;
         private readonly int _minBoundaryLength = 10;
 
-        public UploadService(IHttpContextAccessor HttpAccessor, IHostEnvironment HostEnv, IConfiguration Configuration)
+        public UploadMultipartFormDataService(IHttpContextAccessor HttpAccessor, IHostEnvironment HostEnv, IConfiguration Configuration)
         {
             this._httpCtxAccessor = HttpAccessor;
             this._allowedFileExtensions = new HashSet<String>(Configuration.GetSection("Upload:AllowedFileExtensions").Get<string[]>());
             this._uploadLocationPath = Path.Combine(HostEnv.ContentRootPath, Configuration["Upload:LocalPath"]);
         }
 
-        public async Task UploadMultipartRequestHandler()
+        public async Task UploadHandlerAsync()
         {
             var HttpRequest = this._httpCtxAccessor.HttpContext!.Request;
             //Check the Content Type (must be "multipart/form-data")
@@ -36,7 +36,7 @@ namespace Microservice.Application.Services.Upload
             if (!Directory.Exists(this._uploadLocationPath)) { 
                 Directory.CreateDirectory(this._uploadLocationPath);
             }
-            //Init a set containing all the Filenames created in this request
+            //Init a set containing all the Filenames created during this request
             ISet<string> CreatedFiles = new HashSet<string>();
             //Init the Http Multipart Stream Reader
             MultipartReader Reader = new MultipartReader(Boundary, HttpRequest.Body);
@@ -75,14 +75,14 @@ namespace Microservice.Application.Services.Upload
                 }
             }
             catch (Exception Ex) {
-                await this.RemoveFilesAsync(CreatedFiles);
+                await this.DeleteFilesFromDirectory(CreatedFiles);
                 throw new Exception(Ex.Message);
             }
             return;
         }
 
-        private async Task RemoveFilesAsync(IEnumerable<string> FileNames) {
-            foreach(string FileName in FileNames) {
+        private async Task DeleteFilesFromDirectory(IEnumerable<string> FileNamesToDelete) {
+            foreach(string FileName in FileNamesToDelete) {
                 string FilePath = Path.Combine(this._uploadLocationPath, FileName);
                 if(File.Exists(FilePath)) {
                     await Task.Run(() => { File.Delete(FilePath); });

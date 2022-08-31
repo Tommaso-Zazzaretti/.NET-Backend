@@ -2,6 +2,6 @@
 {
     public interface IUploadService
     {
-        public Task UploadMultipartRequestHandler();
+        public Task UploadHandlerAsync();
     }
 }

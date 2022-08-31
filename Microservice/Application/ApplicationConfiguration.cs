@@ -30,7 +30,7 @@ namespace Microservice.Application
             //Registry an Http Request Accessor for Upload Servixw
             services.AddHttpContextAccessor();
             //Registry all Upload Services
-            services.AddScoped<IUploadService, UploadService>();
+            services.AddScoped<IUploadService, UploadMultipartFormDataService>();
             return services;
         }
     }
