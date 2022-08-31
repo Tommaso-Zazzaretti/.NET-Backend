@@ -42,10 +42,10 @@ namespace Microservice.ApiWeb.Controllers.Crud
             if (UserDtoToAdd==null || string.IsNullOrEmpty(UserDtoToAdd.Password)) { return BadRequest(); }
             User UserToAdd = this._mapper.Map<User>(UserDtoToAdd);
             UserToAdd.Password = this._encryptorService.Hash(UserToAdd.Password!);
-            //Open Transaction
+            //Open Transaction ( [1] Insert new user, [2] Insert new UserRole )
             IDbContextTransaction Transaction = this._dbCtx.Database.BeginTransaction();
-            User AddedUser = await this._userCrudService.Create(UserToAdd);
-            await this._usersRolesCrudService.Create(new UsersRoles() { UserName = AddedUser.UserName, RoleName = Roles.USER });
+            User       AddedUser     = await this._userCrudService.Create(UserToAdd);
+            UsersRoles AddedUserRole = await this._usersRolesCrudService.Create(new UsersRoles() { UserName = AddedUser.UserName, RoleName = Roles.USER });
             Transaction.Commit(); //Close Transaction
             return Ok(this._mapper.Map<UserDtoGetResponse>(AddedUser));
         }

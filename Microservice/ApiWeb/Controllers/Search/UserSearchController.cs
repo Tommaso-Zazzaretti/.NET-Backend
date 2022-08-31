@@ -30,6 +30,7 @@ namespace Microservice.ApiWeb.Controllers.Search
         public async Task<IActionResult> GetUsersByStringFieldSearch([FromQuery]StringPatternPredicateFilterDto Filter)
         {
             if (Filter == null) { return BadRequest(); }
+            // Convert { "UserName","StartsWith","To"  }    TO LINQ     user => user.UserName.StartsWith("To")
             Expression<Func<User, bool>> FilterExpr = this._linqBuilder.StringPredicate<User>(Filter.StringFieldName!,Filter.Action!,Filter.Pattern!);
             IEnumerable<User> Users = await this._userCrudService.RetrieveAll(FilterExpr);
             return Ok(this._mapper.Map<IEnumerable<User>,IEnumerable<UserDtoGetResponse>>(Users));
