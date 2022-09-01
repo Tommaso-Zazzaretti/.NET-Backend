@@ -36,9 +36,9 @@ namespace Microservice.Application.Services.Security
         }
 
         // EX: "PASSWORD"  ===>  "salt.hashedKey"
-        public string Hash(string password)
+        public string Hash(string clearText)
         {
-            var Algorithm = new Rfc2898DeriveBytes(password, _saltCharSize, _iterations, HashAlgorithmName.SHA512);
+            var Algorithm = new Rfc2898DeriveBytes(clearText, _saltCharSize, _iterations, HashAlgorithmName.SHA512);
             string? Salt = Convert.ToBase64String(Algorithm.Salt);
             string HashedKey = Convert.ToBase64String(Algorithm.GetBytes(_keyCharSize));
             return $"{Salt}.{HashedKey}";
