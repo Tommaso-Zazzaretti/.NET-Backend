@@ -17,7 +17,7 @@ namespace Microservice.Application.Services.Upload
         {
             this._httpCtxAccessor = HttpAccessor;
             this._allowedFileExtensions = new HashSet<String>(Configuration.GetSection("Upload:AllowedFileExtensions").Get<string[]>());
-            this._uploadLocationPath = Path.Combine(HostEnv.ContentRootPath, Configuration["Upload:LocalPath"]);
+            this._uploadLocationPath = Path.Combine(HostEnv.ContentRootPath, Configuration["Upload:LocalPhysicalPath"]);
         }
 
         public async Task UploadHandlerAsync()

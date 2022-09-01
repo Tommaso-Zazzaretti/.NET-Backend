@@ -18,8 +18,7 @@ namespace Microservice.ApiWeb.Controllers.Search
         private readonly ILinqCombinatorService _linqCombiner;
         private readonly IMapper _mapper;
 
-        public UserSearchController(ICrudService<User> CrudService, ILinqGeneratorService LinqBuilder, ILinqCombinatorService LinqCombiner, IMapper Mapper)
-        {
+        public UserSearchController(ICrudService<User> CrudService, ILinqGeneratorService LinqBuilder, ILinqCombinatorService LinqCombiner, IMapper Mapper) {
             this._userCrudService = CrudService;
             this._linqBuilder  = LinqBuilder;
             this._linqCombiner = LinqCombiner;
