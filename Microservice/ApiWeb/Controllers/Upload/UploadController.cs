@@ -11,8 +11,7 @@ namespace Microservice.ApiWeb.Controllers.Upload
     {
         private readonly IUploadService<MultipartFormData> _uploadMultipartFormDataService;
 
-        public UploadController(IUploadService<MultipartFormData> UploadService)
-        {
+        public UploadController(IUploadService<MultipartFormData> UploadService) {
             this._uploadMultipartFormDataService = UploadService;
         }
 
