@@ -20,7 +20,18 @@ namespace Microservice.Application.Services.Upload
             this._uploadLocationPath = Path.Combine(HostEnv.ContentRootPath, Configuration["Upload:LocalPhysicalPath"]);
         }
 
-        public async Task UploadHandlerAsync()
+        /*
+            With the IFormFile approach, the whole file is loaded into a variable, and then processing on disk begins.
+            This involves a large allocation of resources for a single request, as there is a moment when the entire file 
+            is stored in memory (before being saved to disk). 
+            To avoid this, DotNet limits the maximum memory allocation to 28 MB for each request: therefore,loading a file 
+            larger than 28 MB with the IFormFile approach results in the system going into exception.
+
+            With this Multipart approach the file is splitted into chunks, which are processed in realtime as if it were 
+            a stream. So it is possible upload files even in the GB order without the system interrupting the execution due to an
+            excessive use of memory. 
+        */
+        public async Task UploadHandlerAsync() // For large files (size > 28 MB)
         {
             var HttpRequest = this._httpCtxAccessor.HttpContext!.Request;
             //Check the Content Type (must be "multipart/form-data")
