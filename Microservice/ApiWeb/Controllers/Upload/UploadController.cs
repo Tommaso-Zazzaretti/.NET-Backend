@@ -17,7 +17,7 @@ namespace Microservice.ApiWeb.Controllers.Upload
 
         [HttpPost("multipart-form-data")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> Upload() {
+        public async Task<IActionResult> Upload() {  // For large files (size > 28 MB)
             await this._uploadMultipartFormDataService.UploadHandlerAsync();
             return Ok();
         }

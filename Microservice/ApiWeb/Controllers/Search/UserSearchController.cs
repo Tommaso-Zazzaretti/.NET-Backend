@@ -55,7 +55,7 @@ namespace Microservice.ApiWeb.Controllers.Search
             return Ok(this._mapper.Map<IEnumerable<User>, IEnumerable<UserDtoGetResponse>>(UsersByMultiplePredicate));
         }
 
-        [HttpGet("equality")] 
+        [HttpGet("equality")] //Example: UserName filter ===>  EqualsConst="Tommaso", StringFieldName="UserName"
         public async Task<IActionResult> GetUsersByStringFieldEqualitySearch([FromQuery] EqualityFilterDto<string> Filter)
         {
             if (Filter == null) { return BadRequest(); }
