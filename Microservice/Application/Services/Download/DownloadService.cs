@@ -6,15 +6,12 @@ namespace Microservice.Application.Services.Download
 {
     public class DownloadService : IDownloadService
     {
-        private readonly IDictionary<string, string> _MIMEMapping = new Dictionary<string, string>() {
-            { "txt" , "text/plain" },
-            { "zip" , "application/zip" },
-            { "json", "application/json" }
-        };
+        private readonly IDictionary<string, string> _MIMEMapping;
         private readonly string _fileLocationPath;
 
         public DownloadService(IHostEnvironment HostEnv, IConfiguration Configuration) {
-            this._fileLocationPath = Path.Combine(HostEnv.ContentRootPath, Configuration["Upload:LocalPhysicalPath"]);
+            this._MIMEMapping = Configuration.GetSection("Download:MIMEMapping").Get<Dictionary<string, string>>();
+            this._fileLocationPath = Path.Combine(HostEnv.ContentRootPath, Configuration["Download:LocalPhysicalPath"]);
         }
 
         public FileStreamResult GetSingleFileAsStream(string FileName)
@@ -69,7 +66,7 @@ namespace Microservice.Application.Services.Download
                     Return a FileStreamResult. 
                     The Stream object passed to a FileStreamResult is automatically closed by his method:
                             => protected override void WriteFile(HttpResponseBase response)
-                    which is invoked invoked during the transmission of the http response.
+                    which is invoked during the transmission of the http response.
                     I set the FileOptions.DeleteOnClose option in order to delete the temporary Zip file after the streaming and clean up the directory
                     So, when the controller processes the response, the stream will be closed and the file will be deleted.  
                 */
