@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microservice.ApiWeb.Filters;
+using System.Text.Json.Serialization;
 
 namespace Microservice.ApiWeb
 {
@@ -6,8 +7,11 @@ namespace Microservice.ApiWeb
     {
         public static IServiceCollection AddApiWeb(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
+            //Configure CORS Policies
             services.AddCors(options => { options.AddPolicy("ALL", policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); });
-            services.AddControllers().AddJsonOptions(opts => opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); 
+            //Configure Controllers with Global Filters and Json Options settings
+            services.AddControllers(opts => opts.Filters.Add(new ExceptionInterceptorFilter()))
+                    .AddJsonOptions(opts => opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); 
             return services;
         }
     }
