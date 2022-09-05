@@ -54,14 +54,12 @@ namespace Microservice.Application.Services.Download
                         //Console.WriteLine(Environment.CurrentManagedThreadId);
                         string FilePath = Path.Combine(this._fileLocationPath, FileName);
                         if (!File.Exists(FilePath)) {
-                            Archive.Dispose(); ZipStreamWriter.Close();
                             throw new Exception("The Download Request cannot be processed. " + FileName + " does not exist.");
                         }
                         Archive.CreateEntryFromFile(FilePath, FileName, CompressionLevel.Optimal);
                     });
                 }
-                Archive.Dispose(); 
-                ZipStreamWriter.Close();
+                Archive.Dispose(); ZipStreamWriter.Close();
                 /*
                     Return a FileStreamResult. 
                     The Stream object passed to a FileStreamResult is automatically closed by his method:
@@ -73,7 +71,8 @@ namespace Microservice.Application.Services.Download
                 FileStream ZipStreamReader = new FileStream(ZipPath, FileMode.Open, FileAccess.Read, FileShare.None, 4096, FileOptions.DeleteOnClose);
                 return new FileStreamResult(ZipStreamReader, "application/zip");
             } 
-            catch (Exception ex){
+            catch (Exception ex) {
+                Archive.Dispose(); ZipStreamWriter.Close();
                 if (File.Exists(ZipPath)) {
                     await Task.Run(() => { File.Delete(ZipPath); });
                 }
