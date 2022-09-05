@@ -1,4 +1,4 @@
-﻿namespace Microservice.ApiWeb.Dto.Filters
+﻿namespace Microservice.ApiWeb.Dto.SearchFilters
 {
     public class StringPatternPredicateFilterDto
     {

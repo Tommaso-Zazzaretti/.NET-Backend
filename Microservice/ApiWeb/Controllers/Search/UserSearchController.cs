@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Microservice.ApiWeb.Dto.Filters;
+using Microservice.ApiWeb.Dto.SearchFilters;
 using Microservice.ApiWeb.Dto.UserResources.Response;
 using Microservice.Application.Services.Crud.Interfaces;
 using Microservice.Application.Services.Linq.Interfaces;
