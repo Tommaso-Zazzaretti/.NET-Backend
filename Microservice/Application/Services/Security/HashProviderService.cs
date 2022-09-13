@@ -22,17 +22,17 @@ namespace Microservice.Application.Services.Security
 
         //Constructor via appsettings.json
         public HashProviderService(IConfiguration configuration) {
-            this._saltCharSize = configuration.GetValue<int>("HashSettings:KEY_SIZE");
-            this._keyCharSize  = configuration.GetValue<int>("HashSettings:SALT_SIZE");
+            this._keyCharSize  = configuration.GetValue<int>("HashSettings:KEY_SIZE");
+            this._saltCharSize = configuration.GetValue<int>("HashSettings:SALT_SIZE");
             this._iterations   = configuration.GetValue<int>("HashSettings:ITERATIONS");
         }
 
         //Constructor via parameters
-        public HashProviderService(int saltSize, int keySize, int iterations)
+        public HashProviderService(int keySize, int saltSize, int iterations)
         {
             this._saltCharSize = saltSize;
-            this._keyCharSize = keySize;
-            this._iterations = iterations;
+            this._keyCharSize  = keySize;
+            this._iterations   = iterations;
         }
 
         // EX: "PASSWORD"  ===>  "salt.hashedKey"
