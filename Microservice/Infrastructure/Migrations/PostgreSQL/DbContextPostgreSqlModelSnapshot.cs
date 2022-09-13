@@ -95,7 +95,7 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                             UserName = "Tom96",
                             Email = "tommaso_zazzaretti_96@gmail.com",
                             Name = "Tommaso",
-                            Password = "mKeQhrpCWaZqNnjjlsSyhQ==.KkNkGdx4VdyIAF2YoNcFc1OyX+YfDf6ZqdiQAWqAVFw=",
+                            Password = "gRkO6op4MmcN9EyzigGoBg==.vYKv8wyKaHQan7rrG4Bf3L656s+h/+if3v35Ypn9O6o=",
                             Surname = "Zazzaretti"
                         });
                 });

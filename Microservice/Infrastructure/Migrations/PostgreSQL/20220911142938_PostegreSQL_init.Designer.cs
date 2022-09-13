@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Microservice.Infrastructure.Migrations.PostgreSQL
 {
     [DbContext(typeof(DbContextPostgreSql))]
-    [Migration("20220808094216_PostegreSQL_init")]
+    [Migration("20220911142938_PostegreSQL_init")]
     partial class PostegreSQL_init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -97,7 +97,7 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                             UserName = "Tom96",
                             Email = "tommaso_zazzaretti_96@gmail.com",
                             Name = "Tommaso",
-                            Password = "mKeQhrpCWaZqNnjjlsSyhQ==.KkNkGdx4VdyIAF2YoNcFc1OyX+YfDf6ZqdiQAWqAVFw=",
+                            Password = "gRkO6op4MmcN9EyzigGoBg==.vYKv8wyKaHQan7rrG4Bf3L656s+h/+if3v35Ypn9O6o=",
                             Surname = "Zazzaretti"
                         });
                 });
