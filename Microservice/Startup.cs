@@ -19,21 +19,26 @@ namespace Microservice
         }
 
         //App Launch Configuration
-        public void Configure(WebApplication app) {
-            app.UseRouting();
-            //Start up of CORS protocol middlware using a policy configured in the ApiConfiguration.cs
-            app.UseCors("ALL");
-            //Start up of the endpoints associated with the controllers
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        public void Configure(WebApplication App) {
+            //Enable route matching middleware to map requests to configured endpoints
+            App.UseRouting();
+            //Enable CORS protocol middlware using a policy configured in the ApiConfiguration.cs
+            App.UseCors("ALL");
+            //Enable Authentication middleware
+            App.UseAuthentication();
+            //Enable Authorization middleware 
+            App.UseAuthorization();
+            //Enable middleware for endpoints calls
+            App.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             //Dev-Only env endpoints middlewares
-            if (app.Environment.IsDevelopment()) {
+            if (App.Environment.IsDevelopment()) {
                 //Start up of the swagger endpoints to access openapi.json generated files  => http://<HOST>:<PORT>/swagger/<DOC_NAME>/swagger.json" 
-                app.UseSwagger();
+                App.UseSwagger();
                 //Start up of a User Interface html endpoint associated with a swagger docs => http://<HOST>:<PORT>/index.html
-                app.UseSwaggerUI(opts => { opts.SwaggerEndpoint("/swagger/APIdocs/swagger.json", "API Docs"); opts.RoutePrefix = string.Empty; });
+                App.UseSwaggerUI(opts => { opts.SwaggerEndpoint("/swagger/APIdocs/swagger.json", "API Docs"); opts.RoutePrefix = string.Empty; });
             }
-            app.Run();
+            App.Run();
         }
     }
 }
