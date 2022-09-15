@@ -93,7 +93,7 @@ namespace Microservice.Application.Services.Security
     */
 
 
-    public sealed class TokenProviderService : ITokenProviderService<JWS>
+    public sealed class TokenProviderService : ITokenProviderService<SignedJwt>
     {
         private readonly IConfiguration _configuration;
         private readonly IHashProviderService _hashProviderService;
@@ -120,9 +120,8 @@ namespace Microservice.Application.Services.Security
             RsaInstance.ImportSubjectPublicKeyInfo(PublicKey, out _);
             return new RsaSecurityKey(RsaInstance);
         }
-
         
-        public async Task<string?> GetJwtAsString(string Email, string Password) {
+        public async Task<string?> GetTokenString(string Email, string Password) {
             //Check the login credentials provided by the user:
             User? AuthenticatedUser = await this.UserCredentialsAuthentication(Email, Password);
             if(AuthenticatedUser == null) { // Wrong credentials!
@@ -162,6 +161,18 @@ namespace Microservice.Application.Services.Security
             return UserByEmail;
         }
 
+        //Just for completeness. The [Authorize] attribute already validates the token automatically.
+        public bool VerifyToken(string TokenString)
+        {
+            TokenValidationParameters ValidationParameters = this.GetTokenValidationParameters();
+            try {
+                new JwtSecurityTokenHandler().ValidateToken(TokenString, ValidationParameters, out var ValidatedToken);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
         public IDictionary<string, string> DecodeToken(string TokenString) {
             JwtSecurityToken TokenDescriptor = new JwtSecurityTokenHandler().ReadJwtToken(TokenString);
             IDictionary<string,string> ClaimsDictionary = new Dictionary<string,string>();
@@ -170,12 +181,20 @@ namespace Microservice.Application.Services.Security
         }
 
         //Utilities for Dependency Injection 
-        public string GetIssuer() {
-            return this._configuration["AsymmetricSignedJwt:Issuer"];
-        }
-
-        public string GetAudience() {
-            return this._configuration["AsymmetricSignedJwt:Audience"]; 
+        public TokenValidationParameters GetTokenValidationParameters() {
+            return new TokenValidationParameters()
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = this.GetSignatureVerificationKey(), //Public Key
+                ValidateIssuer = true,
+                ValidIssuer = this._configuration["AsymmetricSignedJwt:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = this._configuration["AsymmetricSignedJwt:Audience"],
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                RequireSignedTokens = true,
+                RequireExpirationTime = true
+            };
         }
     }
 }

@@ -11,9 +11,9 @@ namespace Microservice.ApiWeb.Controllers.Login
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly ITokenProviderService<JWS> _tokenProviderService;
+        private readonly ITokenProviderService<SignedJwt> _tokenProviderService;
 
-        public LoginController(ITokenProviderService<JWS> TokenProviderService) { 
+        public LoginController(ITokenProviderService<SignedJwt> TokenProviderService) { 
             this._tokenProviderService = TokenProviderService; 
         }
 
@@ -23,16 +23,17 @@ namespace Microservice.ApiWeb.Controllers.Login
             if (UserCredentials          == null) { return BadRequest(); }
             if (UserCredentials.Email    == null) { return BadRequest(); }
             if (UserCredentials.Password == null) { return BadRequest(); }
-            string? JwtString = await this._tokenProviderService.GetJwtAsString(UserCredentials.Email, UserCredentials.Password);
+            string? JwtString = await this._tokenProviderService.GetTokenString(UserCredentials.Email, UserCredentials.Password);
             if(JwtString == null) { return BadRequest(); }
             return Ok(JwtString);
         }
 
         [HttpGet("test")]
-        [Authorize(AuthenticationSchemes = "AsymmetricSignedJwtSchema")]
-        public IActionResult DecodeToken() {
+        [Authorize(AuthenticationSchemes = "AsymmetricSignedJwt")]
+        public IActionResult GetTokenClaims() {
             //Access to request header 'Authorization: Bearer <TOKEN_STRING>'
             string TokenString = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            if(!this._tokenProviderService.VerifyToken(TokenString)) { return BadRequest(); }
             return Ok(this._tokenProviderService.DecodeToken(TokenString));
         }
     }

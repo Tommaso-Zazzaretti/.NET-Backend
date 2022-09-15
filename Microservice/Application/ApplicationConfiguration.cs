@@ -32,7 +32,7 @@ namespace Microservice.Application
             //Hash Encryption Helper Service for passwords & sensitive data
             services.AddSingleton<IHashProviderService, HashProviderService>();
             //Registry Security Token Provider
-            services.AddScoped<ITokenProviderService<JWS>, TokenProviderService>();
+            services.AddScoped<ITokenProviderService<SignedJwt>, TokenProviderService>();
             //Registry an Http Request Accessor for Upload Servixw
             services.AddHttpContextAccessor();
             //Registry all Upload Services

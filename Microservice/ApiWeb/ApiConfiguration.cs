@@ -17,21 +17,10 @@ namespace Microservice.ApiWeb
             services.AddControllers(opts => opts.Filters.Add(new ExceptionInterceptorFilter()))
                     .AddJsonOptions(opts => opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             //Configure Authentication Schemas for API
-            services.AddAuthentication().AddJwtBearer("AsymmetricSignedJwtSchema", opts => {
-                ITokenProviderService<JWS> JwtService = services.BuildServiceProvider().GetRequiredService<ITokenProviderService<JWS>>();
+            services.AddAuthentication().AddJwtBearer("AsymmetricSignedJwt", opts => {
+                ITokenProviderService<SignedJwt> JwtService = services.BuildServiceProvider().GetRequiredService<ITokenProviderService<SignedJwt>>();
                 //Set the rules for accepting or rejecting a signed JWT. In an asymmetric signed scenario, the key used to verify the token signature is the public key
-                opts.TokenValidationParameters = new TokenValidationParameters() {
-                    ValidateIssuerSigningKey   = true,
-                    IssuerSigningKey           = JwtService.GetSignatureVerificationKey(), //Public Key
-                    ValidateIssuer             = true,
-                    ValidIssuer                = JwtService.GetIssuer(),
-                    ValidateAudience           = true,
-                    ValidAudience              = JwtService.GetAudience(),
-                    ValidateLifetime           = true,
-                    ClockSkew                  = TimeSpan.Zero,
-                    RequireSignedTokens        = true,
-                    RequireExpirationTime      = true
-                };
+                opts.TokenValidationParameters = JwtService.GetTokenValidationParameters();
             });
 
             //Dev-Only configurations

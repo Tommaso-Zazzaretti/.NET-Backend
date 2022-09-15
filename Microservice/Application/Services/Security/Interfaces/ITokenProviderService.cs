@@ -7,14 +7,15 @@ namespace Microservice.Application.Services.Security.Interfaces
 {
     public interface ITokenProviderService<T> where T : TokenTypeContext
     {
-        public Task<string?>  GetJwtAsString(string Email, string Password);
-        public IDictionary<string,string> DecodeToken(string TokenString);
+        //Token Methods
+        public Task<string?> GetTokenString(string Email, string Password);
+        public IDictionary<string, string> DecodeToken(string TokenString);
+        public bool VerifyToken(string TokenString);
+
+        //PublicKey API call method
         public RsaSecurityKey GetSignatureVerificationKey();
 
-
-        //Utilities for D.I. (Token Validation Parameters)
-        public string GetIssuer();
-        public string GetAudience();
-
+        //Utilities for D.I. AddAuthentication Schema
+        public TokenValidationParameters GetTokenValidationParameters();
     }
 }
