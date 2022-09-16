@@ -1,7 +1,8 @@
 ﻿using Microservice.ApiWeb.Filters;
-using Microservice.Application.Services.Security.Context;
-using Microservice.Application.Services.Security.Interfaces;
-using Microsoft.IdentityModel.Tokens;
+using Microservice.Application.Services.Authentication.Context;
+using Microservice.Application.Services.Authentication.Interfaces;
+using Microservice.Application.Services.Authorization;
+using Microservice.Application.Services.Authorization.Requirements;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 
@@ -21,6 +22,12 @@ namespace Microservice.ApiWeb
                 ITokenProviderService<SignedJwt> JwtService = services.BuildServiceProvider().GetRequiredService<ITokenProviderService<SignedJwt>>();
                 //Set the rules for accepting or rejecting a signed JWT. In an asymmetric signed scenario, the key used to verify the token signature is the public key
                 opts.TokenValidationParameters = JwtService.GetTokenValidationParameters();
+            });
+            //Configure Authorization Policies
+            services.AddAuthorization(opts => {
+                opts.AddPolicy(AuthorizationPolicies.USER       , policy => policy.AddRequirements(new UserRequirements()));
+                opts.AddPolicy(AuthorizationPolicies.ADMIN      , policy => policy.AddRequirements(new AdminRequirements()));
+                opts.AddPolicy(AuthorizationPolicies.SUPER_ADMIN, policy => policy.AddRequirements(new SuperAdminRequirements()));
             });
 
             //Dev-Only configurations
