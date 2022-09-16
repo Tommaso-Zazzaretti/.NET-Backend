@@ -12,9 +12,23 @@ namespace Microservice.Infrastructure.Seeds.PostgreSQL
                 UserName    = "Tom96",
                 Name        = "Tommaso",
                 Surname     = "Zazzaretti",
-                Email       = "tommaso_zazzaretti_96@gmail.com",
+                Email       = "tommaso.zazzaretti96@gmail.com",
                 Password    = _service.Hash("P@ssw0rd")
-            }
+            },
+            new User(){
+                UserName    = "UserX",
+                Name        = "Name",
+                Surname     = "Surname",
+                Email       = "user@gmail.com",
+                Password    = _service.Hash("P@ssw0rd")
+            },
+            new User(){
+                UserName    = "AdminX",
+                Name        = "Name",
+                Surname     = "Surname",
+                Email       = "admin@gmail.com",
+                Password    = _service.Hash("P@ssw0rd")
+            },
         };
     }
 }

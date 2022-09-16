@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Microservice.Infrastructure.Migrations.PostgreSQL
 {
     [DbContext(typeof(DbContextPostgreSql))]
-    [Migration("20220911142938_PostegreSQL_init")]
+    [Migration("20220916102338_PostegreSQL_init")]
     partial class PostegreSQL_init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,10 +95,26 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                         new
                         {
                             UserName = "Tom96",
-                            Email = "tommaso_zazzaretti_96@gmail.com",
+                            Email = "tommaso.zazzaretti96@gmail.com",
                             Name = "Tommaso",
-                            Password = "gRkO6op4MmcN9EyzigGoBg==.vYKv8wyKaHQan7rrG4Bf3L656s+h/+if3v35Ypn9O6o=",
+                            Password = "zE+QFvJEQZcW2CInpmzavw==.q68VLGga5wW1QlRugPif0qW34HncYa75wEWU379GbeA=",
                             Surname = "Zazzaretti"
+                        },
+                        new
+                        {
+                            UserName = "UserX",
+                            Email = "user@gmail.com",
+                            Name = "Name",
+                            Password = "9DGm3i8H9aVZb85xMCn2DA==.oPDLFqfzEo5M+ltp7JZ+sGpOS6XV26Ylax6E9MhWna8=",
+                            Surname = "Surname"
+                        },
+                        new
+                        {
+                            UserName = "AdminX",
+                            Email = "admin@gmail.com",
+                            Name = "Name",
+                            Password = "odKlVB/6/sHdvb33OTV6ow==.re0mTrtKQ/HChI1Yc6GDdG8kXKRm4Dch4tSCndyEi28=",
+                            Surname = "Surname"
                         });
                 });
 
@@ -137,6 +153,16 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                         {
                             UserName = "Tom96",
                             RoleName = "SUPER-ADMIN"
+                        },
+                        new
+                        {
+                            UserName = "UserX",
+                            RoleName = "USER"
+                        },
+                        new
+                        {
+                            UserName = "AdminX",
+                            RoleName = "ADMIN"
                         });
                 });
 

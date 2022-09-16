@@ -81,7 +81,12 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                 schema: "web",
                 table: "users",
                 columns: new[] { "username", "email", "name", "password", "surname" },
-                values: new object[] { "Tom96", "tommaso_zazzaretti_96@gmail.com", "Tommaso", "gRkO6op4MmcN9EyzigGoBg==.vYKv8wyKaHQan7rrG4Bf3L656s+h/+if3v35Ypn9O6o=", "Zazzaretti" });
+                values: new object[,]
+                {
+                    { "AdminX", "admin@gmail.com", "Name", "odKlVB/6/sHdvb33OTV6ow==.re0mTrtKQ/HChI1Yc6GDdG8kXKRm4Dch4tSCndyEi28=", "Surname" },
+                    { "Tom96", "tommaso.zazzaretti96@gmail.com", "Tommaso", "zE+QFvJEQZcW2CInpmzavw==.q68VLGga5wW1QlRugPif0qW34HncYa75wEWU379GbeA=", "Zazzaretti" },
+                    { "UserX", "user@gmail.com", "Name", "9DGm3i8H9aVZb85xMCn2DA==.oPDLFqfzEo5M+ltp7JZ+sGpOS6XV26Ylax6E9MhWna8=", "Surname" }
+                });
 
             migrationBuilder.InsertData(
                 schema: "web",
@@ -89,9 +94,11 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                 columns: new[] { "rolename", "username" },
                 values: new object[,]
                 {
+                    { "ADMIN", "AdminX" },
                     { "ADMIN", "Tom96" },
                     { "SUPER-ADMIN", "Tom96" },
-                    { "USER", "Tom96" }
+                    { "USER", "Tom96" },
+                    { "USER", "UserX" }
                 });
 
             migrationBuilder.CreateIndex(
