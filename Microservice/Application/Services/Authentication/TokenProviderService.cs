@@ -5,9 +5,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using Microservice.Application.Services.Security.Context;
+using Microservice.Application.Services.Authentication.Context;
+using Microservice.Application.Services.Authentication.Interfaces;
 
-namespace Microservice.Application.Services.Security
+namespace Microservice.Application.Services.Authentication
 {
     /*
         ----------------------------------------------------------------------------------------------------------------------------------
@@ -107,7 +108,7 @@ namespace Microservice.Application.Services.Security
 
         //PRIVATE KEY: Used to sign a token. It must not be shared! Only those who know this key can produce valid signed tokens
         private RsaSecurityKey GetSignatureKey() {
-            string PrivateKeyString = this._configuration.GetSection("Authentication:AsymmetricJwt:PrivateKeyPkcs8").Get<string[]>()[1];
+            string PrivateKeyString = this._configuration.GetSection("Jwt:PrivateKeyPkcs8").Get<string[]>()[1];
             byte[] PrivateKeyBinary = Convert.FromBase64String(PrivateKeyString);
             RSA RsaInstance = RSA.Create();
             RsaInstance.ImportPkcs8PrivateKey(PrivateKeyBinary, out _);
@@ -116,7 +117,7 @@ namespace Microservice.Application.Services.Security
 
         //PUBLIC KEY: Used to verify a token. It can only be used to verify the issuing source of the token
         public RsaSecurityKey GetSignatureVerificationKey() {
-            string PublicKeyString = this._configuration.GetSection("Authentication:AsymmetricJwt:PublicKeyX_509").Get<string[]>()[1];
+            string PublicKeyString = this._configuration.GetSection("Jwt:PublicKeyX_509").Get<string[]>()[1];
             byte[] PublicKeyBinary = Convert.FromBase64String(PublicKeyString);
             RSA RsaInstance = RSA.Create();
             RsaInstance.ImportSubjectPublicKeyInfo(PublicKeyBinary, out _);
@@ -145,9 +146,9 @@ namespace Microservice.Application.Services.Security
             SigningCredentials Credentials = new SigningCredentials(this.GetSignatureKey(), SecurityAlgorithms.RsaSha256);
 
             //Build the token string
-            string Issuer   = this._configuration.GetValue<string>("Authentication:AsymmetricJwt:Issuer");
-            string Audience = this._configuration.GetValue<string>("Authentication:AsymmetricJwt:Audience");
-            double Minutes  = this._configuration.GetValue<double>("Authentication:AsymmetricJwt:TokenValidityMinutes");
+            string Issuer   = this._configuration.GetValue<string>("Jwt:Issuer");
+            string Audience = this._configuration.GetValue<string>("Jwt:Audience");
+            double Minutes  = this._configuration.GetValue<double>("Jwt:TokenValidityMinutes");
             DateTime NotBeforeDate = DateTime.Now;
             SecurityToken TokenDescriptor = new JwtSecurityToken(Issuer, Audience, TokenPayloadClaims, NotBeforeDate, NotBeforeDate.AddMinutes(Minutes), Credentials);
             string TokenString = new JwtSecurityTokenHandler().WriteToken(TokenDescriptor);
@@ -189,9 +190,9 @@ namespace Microservice.Application.Services.Security
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = this.GetSignatureVerificationKey(), //Public Key
                 ValidateIssuer = true,
-                ValidIssuer = this._configuration["Authentication:AsymmetricJwt:Issuer"],
+                ValidIssuer = this._configuration["Jwt:Issuer"],
                 ValidateAudience = true,
-                ValidAudience = this._configuration["Authentication:AsymmetricJwt:Audience"],
+                ValidAudience = this._configuration["Jwt:Audience"],
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero,
                 RequireSignedTokens = true,

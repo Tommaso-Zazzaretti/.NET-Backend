@@ -1,9 +1,9 @@
-﻿using Microservice.Application.Services.Security.Context.Base;
+﻿using Microservice.Application.Services.Authentication.Context.Base;
 using Microservice.Domain.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
-namespace Microservice.Application.Services.Security.Interfaces
+namespace Microservice.Application.Services.Authentication.Interfaces
 {
     public interface ITokenProviderService<T> where T : TokenTypeContext
     {
