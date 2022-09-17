@@ -48,10 +48,10 @@ namespace Microservice.Infrastructure.DatabaseContexts
         protected bool FilterIEntityTypeConfigurationClass(Type type, HashSet<Type> DbSetTypes)
         {
             IEnumerable<Type> ImplementedInterfaces = type.GetInterfaces();
-            foreach (Type implInterface in ImplementedInterfaces) { //Find an IEntityTypeConfiguration<T> interface with T included by DbSetTypes
-                if (!implInterface.IsGenericType) { continue; }
-                if (implInterface.GetGenericTypeDefinition() != typeof(IEntityTypeConfiguration<>)) { continue; }
-                if (!DbSetTypes.Contains(implInterface.GenericTypeArguments[0])) { continue; }
+            foreach (Type Interface in ImplementedInterfaces) { //Find an IEntityTypeConfiguration<T> interface with T included by DbSetTypes
+                if (!Interface.IsGenericType) { continue; }
+                if (Interface.GetGenericTypeDefinition() != typeof(IEntityTypeConfiguration<>)) { continue; }
+                if (!DbSetTypes.Contains(Interface.GenericTypeArguments[0])) { continue; }
                 return true;
             }
             return false;
