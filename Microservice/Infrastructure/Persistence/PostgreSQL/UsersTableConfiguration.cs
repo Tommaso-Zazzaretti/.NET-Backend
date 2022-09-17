@@ -29,7 +29,7 @@ namespace Microservice.Infrastructure.Persistence.PostgreSQL
             builder.Property(user => user.Password).IsRequired().HasMaxLength(256).HasColumnType("CHAR(256)").HasColumnName("password");
             //Indeces
             builder.HasIndex(x => x.UserName);
-            builder.HasIndex(x => x.Email);
+            builder.HasIndex(x => x.Email).IsUnique(true);
             //Initial Data
             builder.HasData(UsersSeeds.Seeds);
 

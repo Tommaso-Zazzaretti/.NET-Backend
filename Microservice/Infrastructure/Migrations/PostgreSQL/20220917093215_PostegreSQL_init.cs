@@ -83,9 +83,9 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                 columns: new[] { "username", "email", "name", "password", "surname" },
                 values: new object[,]
                 {
-                    { "AdminX", "admin@gmail.com", "Name", "odKlVB/6/sHdvb33OTV6ow==.re0mTrtKQ/HChI1Yc6GDdG8kXKRm4Dch4tSCndyEi28=", "Surname" },
-                    { "Tom96", "tommaso.zazzaretti96@gmail.com", "Tommaso", "zE+QFvJEQZcW2CInpmzavw==.q68VLGga5wW1QlRugPif0qW34HncYa75wEWU379GbeA=", "Zazzaretti" },
-                    { "UserX", "user@gmail.com", "Name", "9DGm3i8H9aVZb85xMCn2DA==.oPDLFqfzEo5M+ltp7JZ+sGpOS6XV26Ylax6E9MhWna8=", "Surname" }
+                    { "AdminX", "admin@gmail.com", "Name", "LRo6nV7VcLdYQHPY2d5Y8w==.KChJuThZyBdV+VbP6tgGhO+2lORR5laMTCfy9SMcPIg=", "Surname" },
+                    { "Tom96", "tommaso.zazzaretti96@gmail.com", "Tommaso", "/x1XDJcpmqBL+yLjyhDcXw==.Os8U80tucvaR7NeGoB+1QpRIJtFakLNvrziOBCnTKU8=", "Zazzaretti" },
+                    { "UserX", "user@gmail.com", "Name", "XTFWssa8g4t5RadVuyRu5g==.7yPnIEcV8C+ioq5SxXF/Z/PUbzre7nZIJsxNMFl4T7o=", "Surname" }
                 });
 
             migrationBuilder.InsertData(
@@ -111,7 +111,8 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                 name: "IX_users_email",
                 schema: "web",
                 table: "users",
-                column: "email");
+                column: "email",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_users_username",

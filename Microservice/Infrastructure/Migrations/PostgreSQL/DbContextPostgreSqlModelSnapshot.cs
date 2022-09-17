@@ -83,7 +83,8 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
 
                     b.HasKey("UserName");
 
-                    b.HasIndex("Email");
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("UserName");
 
@@ -95,7 +96,7 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                             UserName = "Tom96",
                             Email = "tommaso.zazzaretti96@gmail.com",
                             Name = "Tommaso",
-                            Password = "zE+QFvJEQZcW2CInpmzavw==.q68VLGga5wW1QlRugPif0qW34HncYa75wEWU379GbeA=",
+                            Password = "/x1XDJcpmqBL+yLjyhDcXw==.Os8U80tucvaR7NeGoB+1QpRIJtFakLNvrziOBCnTKU8=",
                             Surname = "Zazzaretti"
                         },
                         new
@@ -103,7 +104,7 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                             UserName = "UserX",
                             Email = "user@gmail.com",
                             Name = "Name",
-                            Password = "9DGm3i8H9aVZb85xMCn2DA==.oPDLFqfzEo5M+ltp7JZ+sGpOS6XV26Ylax6E9MhWna8=",
+                            Password = "XTFWssa8g4t5RadVuyRu5g==.7yPnIEcV8C+ioq5SxXF/Z/PUbzre7nZIJsxNMFl4T7o=",
                             Surname = "Surname"
                         },
                         new
@@ -111,7 +112,7 @@ namespace Microservice.Infrastructure.Migrations.PostgreSQL
                             UserName = "AdminX",
                             Email = "admin@gmail.com",
                             Name = "Name",
-                            Password = "odKlVB/6/sHdvb33OTV6ow==.re0mTrtKQ/HChI1Yc6GDdG8kXKRm4Dch4tSCndyEi28=",
+                            Password = "LRo6nV7VcLdYQHPY2d5Y8w==.KChJuThZyBdV+VbP6tgGhO+2lORR5laMTCfy9SMcPIg=",
                             Surname = "Surname"
                         });
                 });
