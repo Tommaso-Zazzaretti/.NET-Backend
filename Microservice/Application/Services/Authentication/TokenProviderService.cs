@@ -1,6 +1,4 @@
-﻿using Microservice.Application.Services.Crud.Interfaces;
-using Microservice.Application.Services.Security.Interfaces;
-using Microservice.Domain.Models;
+﻿using Microservice.Domain.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -146,8 +144,7 @@ namespace Microservice.Application.Services.Authentication
         }
 
         //Just for completeness. The [Authorize] attribute already validates the token automatically.
-        public bool VerifyToken(string TokenString) 
-        {
+        public bool VerifyToken(string TokenString) {
             TokenValidationParameters ValidationParameters = this.GetTokenValidationParameters();
             try {
                 new JwtSecurityTokenHandler().ValidateToken(TokenString, ValidationParameters, out var ValidatedToken);
@@ -171,8 +168,7 @@ namespace Microservice.Application.Services.Authentication
 
         //Utilities for Dependency Injection 
         public TokenValidationParameters GetTokenValidationParameters() {
-            return new TokenValidationParameters()
-            {
+            return new TokenValidationParameters() {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = this.GetSignatureVerificationKey(), //Public Key
                 ValidateIssuer = true,
