@@ -97,13 +97,9 @@ namespace Microservice.Application.Services.Authentication
     public sealed class TokenProviderService : ITokenProviderService<SignedJwt>
     {
         private readonly IConfiguration _configuration;
-        private readonly IHashProviderService _hashProviderService;
-        private readonly ICrudService<User> _userCrudService;
-
-        public TokenProviderService(IConfiguration Configuration,IHashProviderService HashService,ICrudService<User> CrudService) {
+        
+        public TokenProviderService(IConfiguration Configuration) {
             this._configuration = Configuration;
-            this._hashProviderService = HashService;
-            this._userCrudService = CrudService;
         }
 
         //PRIVATE KEY: Used to sign a token. It must not be shared! Only those who know this key can produce valid signed tokens
@@ -124,13 +120,7 @@ namespace Microservice.Application.Services.Authentication
             return new RsaSecurityKey(RsaInstance);
         }
         
-        public async Task<string?> GetTokenString(string Email, string Password) {
-            //Check the login credentials provided by the user:
-            User? AuthenticatedUser = await this.UserCredentialsAuthentication(Email, Password);
-            if(AuthenticatedUser == null) { // Wrong credentials!
-                return null; 
-            }
-
+        public string GetTokenString(User AuthenticatedUser) {
             //Build the Token Claims List. It is preferable not to insert too much information about the user in the token, and
             //not to introduce sensitive data. Better to enter IDs, or other information of a logical nature.
             //If there are sensitive data that shall not be disclosed to a third party (phone numbers, personal address...) the
@@ -155,17 +145,8 @@ namespace Microservice.Application.Services.Authentication
             return TokenString;
         }
 
-        private async Task<User?> UserCredentialsAuthentication(string Email, string Password) {
-            //Email check
-            User? UserByEmail = await this._userCrudService.Retrieve(user => user.Email == Email, user=>user.UsersRoles);
-            if (UserByEmail == null) { return null; }
-            //Password hash check
-            if(!this._hashProviderService.Check(UserByEmail.Password!,Password)) { return null; }
-            return UserByEmail;
-        }
-
         //Just for completeness. The [Authorize] attribute already validates the token automatically.
-        public bool VerifyToken(string TokenString)
+        public bool VerifyToken(string TokenString) 
         {
             TokenValidationParameters ValidationParameters = this.GetTokenValidationParameters();
             try {
@@ -181,6 +162,11 @@ namespace Microservice.Application.Services.Authentication
             IDictionary<string,string> ClaimsDictionary = new Dictionary<string,string>();
             TokenDescriptor.Claims.ToList().ForEach(claim => ClaimsDictionary.Add(claim.Type.Split('/').Last(), claim.Value));
             return ClaimsDictionary;
+        }
+
+        public string GetPublicKey() {
+            string[] PublicKeyLines = this._configuration.GetSection("Jwt:PublicKeyX_509").Get<string[]>();
+            return string.Join("\n", PublicKeyLines);
         }
 
         //Utilities for Dependency Injection 
