@@ -4,6 +4,7 @@ using Microservice.Application.Services.Authentication.Interfaces;
 using Microservice.Application.Services.Authorization;
 using Microservice.Application.Services.Authorization.Requirements;
 using Microsoft.OpenApi.Models;
+using System.Net;
 using System.Text.Json.Serialization;
 
 namespace Microservice.ApiWeb
@@ -12,15 +13,28 @@ namespace Microservice.ApiWeb
     {
         public static IServiceCollection AddApiWeb(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
+            //Configure HTTPS Redirection
+            services.AddHttpsRedirection(opts => {
+                opts.RedirectStatusCode = (int)HttpStatusCode.TemporaryRedirect;
+                opts.HttpsPort = int.Parse(configuration["Kestrel:Endpoints:Https:Url"].Split(':').Last());
+            });
+            //Configure HTTP Strict-Transport-Security Header
+            services.AddHsts(options => { 
+                options.Preload = true; 
+                options.IncludeSubDomains = true; 
+                options.MaxAge = TimeSpan.FromDays(60); 
+            });
             //Configure CORS Policies
-            services.AddCors(options => { options.AddPolicy("ALL", policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); });
+            services.AddCors(options => { 
+                options.AddPolicy("ALL", policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); 
+            });
             //Configure Controllers with Global Filters and Json Options de/serialization settings
             services.AddControllers(opts => opts.Filters.Add(new ExceptionInterceptorFilter()))
                     .AddJsonOptions(opts => opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             //Configure Authentication Schemas for API
             services.AddAuthentication().AddJwtBearer("AsymmetricSignedJwt", opts => {
+                //Set the rules for accepting or rejecting a signed JWT
                 ITokenProviderService<SignedJwt> JwtService = services.BuildServiceProvider().GetRequiredService<ITokenProviderService<SignedJwt>>();
-                //Set the rules for accepting or rejecting a signed JWT. In an asymmetric signed scenario, the key used to verify the token signature is the public key
                 opts.TokenValidationParameters = JwtService.GetTokenValidationParameters();
             });
             //Configure Authorization Policies
@@ -29,7 +43,7 @@ namespace Microservice.ApiWeb
                 opts.AddPolicy(AuthorizationPolicies.ADMIN      , policy => policy.AddRequirements(new AdminRequirements()));
                 opts.AddPolicy(AuthorizationPolicies.SUPER_ADMIN, policy => policy.AddRequirements(new SuperAdminRequirements()));
             });
-
+            
             //Dev-Only configurations
             if (env.IsDevelopment()) { 
                 //Registry a SwaggerGenerator to generate a json file according to the specifications of the openapi.json standard
