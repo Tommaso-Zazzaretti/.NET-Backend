@@ -60,14 +60,11 @@ namespace Microservice.WebServer.Ssl
 
             /* The BasicConstraint is an X.509 certificate v3 extension. 
             This extension describes whether the certificate is a CA certificate or an END_ENTITY certificate:
-         
                 * END_ENTITY :
                       An EndEntity is a user system that is the subject of a certificate, such as a web server.
-
                 * CA :
                       It is a CertificateAuthority. Is a trusted organization that issues digital certificates 
                       for websites and other entities.
-
                       There are two types of certificate authorities (CAs): ROOT CAs and INTERMEDIATE CAs. 
                       For an SSL certificate to be trusted, that certificate must have been issued by a CA that's 
                       included in the trusted store of the device that's connecting. If the certificate wasn't issued 
@@ -75,7 +72,6 @@ namespace Microservice.WebServer.Ssl
                       of the issuing CA was issued by a trusted CA. It continues checking until either a trusted CA is found 
                       (at which point a trusted, secure connection will be established), or no trusted CA can be found 
                       (at which point the device will usually display an error).
-
                       The list of SSL certificates, from the root ca certificate to the end-user certificate, 
                       represents the SSL certificate chain :
              
@@ -94,7 +90,6 @@ namespace Microservice.WebServer.Ssl
                                                      | PathLenConstr: None     |
                                                      +-------------------------+
             A web browser tries to find a trusted CA by checking the stores and going up until he meets one, up to the ROOT CA.
-            
             Therefore this extension is used to determine the type of certificate. 
             In this case it's a simple endpoint certificate  for localhost : */
             Request.CertificateExtensions.Add(
@@ -124,12 +119,10 @@ namespace Microservice.WebServer.Ssl
                     critical: true)
             );
 
-            /* 
-            Both the TLS and SSL protocols use what is known as an 'asymmetric' Public Key Infrastructure (PKI) system. 
+            /* Both the TLS and SSL protocols use what is known as an 'asymmetric' Public Key Infrastructure (PKI) system. 
             An asymmetric system uses two 'keys' to encrypt communications, a 'public' key and a 'private' key. 
             This extension is used to provide browsers with the public key. With this, they can verify the digital signature 
-            and encrypt the data to send.
-            */
+            and encrypt the data to send. */
             Request.CertificateExtensions.Add(
                 new X509SubjectKeyIdentifierExtension(
                     key     : Request.PublicKey,

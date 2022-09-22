@@ -4,7 +4,6 @@ using Microservice.Application.Services.Authentication.Interfaces;
 using Microservice.Application.Services.Authorization;
 using Microservice.Application.Services.Authorization.Requirements;
 using Microsoft.OpenApi.Models;
-using System.Net;
 using System.Text.Json.Serialization;
 
 namespace Microservice.ApiWeb
@@ -13,16 +12,16 @@ namespace Microservice.ApiWeb
     {
         public static IServiceCollection AddApiWeb(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
+            //Configure HTTP Strict-Transport-Security Header
+            services.AddHsts(options => {
+                options.Preload = true;                 //Make the server available only via Https after first call
+                options.IncludeSubDomains = true;       //Extend HSTS rule to subdomains
+                options.MaxAge = TimeSpan.FromDays(60); //Time for which clients must remember that the site can only be reached via https
+            });
             //Configure HTTPS Redirection
             services.AddHttpsRedirection(opts => {
-                opts.RedirectStatusCode = (int)HttpStatusCode.TemporaryRedirect;
-                opts.HttpsPort = int.Parse(configuration["Kestrel:Endpoints:Https:Url"].Split(':').Last());
-            });
-            //Configure HTTP Strict-Transport-Security Header
-            services.AddHsts(options => { 
-                options.Preload = true; 
-                options.IncludeSubDomains = true; 
-                options.MaxAge = TimeSpan.FromDays(60); 
+                opts.RedirectStatusCode = 307; //TemporaryRedirect
+                opts.HttpsPort = int.Parse(configuration["Kestrel:Endpoints:Https:Url"].Split(':').Last()); //Redirect port
             });
             //Configure CORS Policies
             services.AddCors(options => { 

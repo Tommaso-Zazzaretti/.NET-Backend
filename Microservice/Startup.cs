@@ -20,22 +20,22 @@ namespace Microservice
         }
 
         //App Launch Configuration
-        public void Configure(WebApplication App) {
-            App.UseHsts();
-            App.UseHttpsRedirection();
-            App.UseRouting();   //Enable route matching middleware to map requests to configured endpoints
-            App.UseCors("ALL"); //Enable CORS protocol middlware using a policy configured in the ApiConfiguration.cs            
-            App.UseAuthentication(); //Enable Authentication middleware
-            App.UseAuthorization();  //Enable Authorization middleware 
-            App.UseEndpoints(endpoints => { endpoints.MapControllers(); }); //Enable middleware for endpoints calls
+        public void Configure(WebApplication app) {
+            app.UseHsts();             //Force clients to use HTTPS (except for the first time)
+            app.UseHttpsRedirection(); //Enable middleware to redirect all calls from http to https
+            app.UseRouting();          //Enable route matching middleware to map requests to configured endpoints
+            app.UseCors("ALL");        //Enable CORS protocol middlware using a policy configured in the ApiConfiguration.cs            
+            app.UseAuthentication();   //Enable Authentication middleware
+            app.UseAuthorization();    //Enable Authorization middleware 
+            app.UseEndpoints(conf => { //Enable Endpoints calls
+                conf.MapControllers(); 
+            }); 
             //Dev-Only env endpoints middlewares
-            if (App.Environment.IsDevelopment()) {
-                //Start up of the swagger endpoints to access openapi.json generated files  => http://<HOST>:<PORT>/swagger/<DOC_NAME>/swagger.json" 
-                App.UseSwagger();
-                //Start up of a User Interface html endpoint associated with a swagger docs => http://<HOST>:<PORT>/index.html
-                App.UseSwaggerUI(opts => {opts.SwaggerEndpoint("/swagger/APIdocs/swagger.json", "API Docs"); opts.RoutePrefix = string.Empty; }); 
+            if (app.Environment.IsDevelopment()) {
+                app.UseSwagger(); //Start up of the swagger endpoints to access openapi.json generated files  => http://<HOST>:<PORT>/swagger/<DOC_NAME>/swagger.json" 
+                app.UseSwaggerUI(opts => {opts.SwaggerEndpoint("/swagger/APIdocs/swagger.json", "API Docs"); opts.RoutePrefix = string.Empty; }); //Start up of a User Interface html endpoint associated with a swagger docs => http://<HOST>:<PORT>/index.html
             }
-            App.Run();
+            app.Run();
         }
     }
 }
