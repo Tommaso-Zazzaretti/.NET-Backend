@@ -12,8 +12,9 @@ namespace Microservice.ApiWeb
     {
         public static IServiceCollection AddApiWeb(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
-            //Configure HTTP Strict-Transport-Security Header
+            //Configure HTTP Strict-Transport-Security Header (in Chrome check the hsts domains => chrome://net-internals/#hsts)
             services.AddHsts(options => {
+                options.ExcludedHosts.Clear();          //.NET Hsts exclude loopback ip and localhost domain!
                 options.Preload = true;                 //Make the server available only via Https after first call
                 options.IncludeSubDomains = true;       //Extend HSTS rule to subdomains
                 options.MaxAge = TimeSpan.FromDays(60); //Time for which clients must remember that the site can only be reached via https
